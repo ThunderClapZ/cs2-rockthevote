@@ -115,7 +115,30 @@ namespace cs2_rockthevote
             if (!_config!.HudMenu)
                 foreach (var kv in Votes.OrderByDescending(x => x.Value).Take(MAX_OPTIONS_HUD_MENU).Where(x => x.Value > 0))
                 {
-                    stringBuilder.AppendFormat($"<br>{kv.Key} <font color='green'>({kv.Value})</font>");
+                    if (kv.Key.Contains("cs_"))
+                    {
+                        stringBuilder.AppendFormat($"<br>[人质]{kv.Key} <font color='green'>({kv.Value})</font>");
+                    }
+                    else if (kv.Key.Contains("de_"))
+                    {
+                        stringBuilder.AppendFormat($"<br>[爆破]{kv.Key} <font color='green'>({kv.Value})</font>");
+                    }
+                    else if (kv.Key.Contains("ctf_"))
+                    {
+                        stringBuilder.AppendFormat($"<br>[夺旗]{kv.Key} <font color='green'>({kv.Value})</font>");
+                    }
+                    else if (kv.Key.Contains("cp_"))
+                    {
+                        stringBuilder.AppendFormat($"<br>[占点]{kv.Key} <font color='green'>({kv.Value})</font>");
+                    }
+                    else if (kv.Key.Contains("hungergame"))
+                    {
+                        stringBuilder.AppendFormat($"<br>[饥饿游戏]{kv.Key} <font color='green'>({kv.Value})</font>");
+                    }
+                    else
+                    {
+                        stringBuilder.AppendFormat($"<br>[歼灭]{kv.Key} <font color='green'>({kv.Value})</font>");
+                    }
                 }
             else
                 foreach (var kv in Votes.Take(MAX_OPTIONS_HUD_MENU))
@@ -193,11 +216,54 @@ namespace cs2_rockthevote
             foreach (var map in mapsEllected.Take(mapsToShow))
             {
                 Votes[map] = 0;
-                menu.AddMenuOption(map, (player, option) =>
+                if (map.Contains("cs_"))
                 {
-                    MapVoted(player, map);
-                    MenuManager.CloseActiveMenu(player);
-                });
+                    menu.AddMenuOption("[人质]"+map, (player, option) =>
+                    {
+                        MapVoted(player, map);
+                        MenuManager.CloseActiveMenu(player);
+                    });
+                }
+                else if (map.Contains("de_"))
+                {
+                    menu.AddMenuOption("[爆破]"+map, (player, option) =>
+                    {
+                        MapVoted(player, map);
+                        MenuManager.CloseActiveMenu(player);
+                    });
+                }
+                else if (map.Contains("cp_"))
+                {
+                    menu.AddMenuOption("[占点]"+map, (player, option) =>
+                    {
+                        MapVoted(player, map);
+                        MenuManager.CloseActiveMenu(player);
+                    });
+                }
+                else if (map.Contains("ctf_"))
+                {
+                    menu.AddMenuOption("[夺旗]"+map, (player, option) =>
+                    {
+                        MapVoted(player, map);
+                        MenuManager.CloseActiveMenu(player);
+                    });
+                }
+                else if (map.Contains("hungergame"))
+                {
+                    menu.AddMenuOption("[饥饿游戏]"+map, (player, option) =>
+                    {
+                        MapVoted(player, map);
+                        MenuManager.CloseActiveMenu(player);
+                    });
+                }
+                else
+                {
+                    menu.AddMenuOption("[歼灭]"+map, (player, option) =>
+                    {
+                        MapVoted(player, map);
+                        MenuManager.CloseActiveMenu(player);
+                    });
+                }
             }
 
             foreach (var player in ServerManager.ValidPlayers())
