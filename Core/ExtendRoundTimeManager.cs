@@ -47,7 +47,7 @@ namespace cs2_rockthevote
         public void OnLoad(Plugin plugin)
         {
             _plugin = plugin;
-            plugin.RegisterListener<OnTick>(VoteDisplayTick);
+            // plugin.RegisterListener<OnTick>(VoteDisplayTick);
         }
 
         /*

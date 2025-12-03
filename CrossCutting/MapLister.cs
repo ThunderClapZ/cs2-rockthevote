@@ -32,7 +32,7 @@ namespace cs2_rockthevote
 #if DEBUG
                 _plugin?.Logger.LogError($"MapLister: Maps file not found at {mapsFile}");
 #endif
-                throw new FileNotFoundException(mapsFile); // This throw means not compatible with AcceleratorCS2 MetaMod plugin
+                throw new FileNotFoundException(mapsFile);
             }
 #if DEBUG
             _plugin?.Logger.LogInformation($"MapLister: Loading maps from {mapsFile}");
@@ -45,7 +45,11 @@ namespace cs2_rockthevote
                 .Select(mapLine =>
                 {
                     string[] args = mapLine.Split(":");
-                    return new Map(args[0], args.Length == 2 ? args[1] : null);
+                    return new Map(
+                        args[0],
+                        args.Length >= 2 && !string.IsNullOrEmpty(args[1]) ? args[1] : null,
+                        args.Length >= 3 ? args[2] : null
+                    );
                 })
                 .ToArray();
 

@@ -29,7 +29,7 @@ public class DisplayMapListCommandHandler : IPluginDependency<Plugin, Config>
             }
             _mapLister.GetMaps().Skip(_mapsPerPage * partNumber).Take(_mapsPerPage).ToList().ForEach(map =>
             {
-                player?.PrintToConsole(map.Name);
+                player?.PrintToConsole($"{map.GetDisplayName()} ({map.Name})");
             });
         });
     }

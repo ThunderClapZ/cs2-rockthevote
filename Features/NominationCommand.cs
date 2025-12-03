@@ -141,9 +141,9 @@ namespace cs2_rockthevote
             nominationMenu = new("Nomination");
             foreach (var map in _mapLister.Maps!.Where(x => x.Name != Server.MapName))
             {
-                nominationMenu.AddMenuOption(map.Name, (CCSPlayerController player, ChatMenuOption option) =>
+                nominationMenu.AddMenuOption(map.GetDisplayName(), (CCSPlayerController player, ChatMenuOption option) =>
                 {
-                    Nominate(player, option.Text);
+                    Nominate(player, map.Name);
                 }, _mapCooldown.IsMapInCooldown(map.Name));
             }
 

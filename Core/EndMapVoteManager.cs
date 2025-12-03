@@ -77,7 +77,7 @@ namespace cs2_rockthevote
         public void OnLoad(Plugin plugin)
         {
             _plugin = plugin;
-            plugin.RegisterListener<OnTick>(VoteDisplayTick);
+            // plugin.RegisterListener<OnTick>(VoteDisplayTick);
         }
 
         public void OnConfigParsed(Config config)
@@ -178,15 +178,17 @@ namespace cs2_rockthevote
             if (_config.HudMenu && mapsToShow > MAX_OPTIONS_HUD_MENU)
                 mapsToShow = MAX_OPTIONS_HUD_MENU;
 
-            foreach (var map in mapsEllected.Take((_eomConfig != null && _eomConfig.AllowExtend && (_eomConfig.ExtendLimit > 0 || _eomConfig.ExtendLimit == -1)) ? (mapsToShow - 1) : mapsToShow))
+            foreach (var mapName in mapsEllected.Take((_eomConfig != null && _eomConfig.AllowExtend && (_eomConfig.ExtendLimit > 0 || _eomConfig.ExtendLimit == -1)) ? (mapsToShow - 1) : mapsToShow))
             {
-                if (!Votes.ContainsKey(map))
+                if (!Votes.ContainsKey(mapName))
                 {
-                    Votes[map] = 0;
+                    Votes[mapName] = 0;
                 }
-                menu.AddMenuOption(map, (player, option) =>
+                var mapObj = _mapLister.Maps?.FirstOrDefault(m => m.Name == mapName);
+                var displayName = mapObj?.GetDisplayName() ?? mapName;
+                menu.AddMenuOption(displayName, (player, option) =>
                 {
-                    MapVoted(player, map);
+                    MapVoted(player, mapName);
                     MenuManager.CloseActiveMenu(player);
                 });
             }

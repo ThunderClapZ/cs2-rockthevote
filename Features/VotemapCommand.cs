@@ -75,18 +75,18 @@ namespace cs2_rockthevote
 #pragma warning restore CS0618 // Type or member is obsolete
             foreach (var map in _mapLister.Maps!.Where(x => x.Name != Server.MapName))
             {
-                votemapMenu.AddMenuOption(map.Name, (CCSPlayerController player, ChatMenuOption option) =>
+                votemapMenu.AddMenuOption(map.GetDisplayName(), (CCSPlayerController player, ChatMenuOption option) =>
                 {
-                    AddVote(player, option.Text);
+                    AddVote(player, map.Name);
                 }, _mapCooldown.IsMapInCooldown(map.Name));
                 votemapMenu.AddMenuOption("Exit", (CCSPlayerController player, ChatMenuOption option) =>
                 {
                     MenuManager.CloseActiveMenu(player);
                 });
 
-                votemapMenuHud.AddMenuOption(map.Name, (CCSPlayerController player, ChatMenuOption option) =>
+                votemapMenuHud.AddMenuOption(map.GetDisplayName(), (CCSPlayerController player, ChatMenuOption option) =>
                 {
-                    AddVote(player, option.Text);
+                    AddVote(player, map.Name);
                 }, _mapCooldown.IsMapInCooldown(map.Name));
             }
         }
