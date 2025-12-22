@@ -81,14 +81,24 @@ namespace cs2_rockthevote
         // returns "" if there's no matching
         // if there's more than one matching name, list all the matching names for players to choose
         // otherwise, returns the matching name
+        // Supports searching by both Name and DisplayName (translated name)
         public string GetSingleMatchingMapName(string map, CCSPlayerController player, StringLocalizer _localizer)
         {
-            if (this.Maps!.Select(x => x.Name).FirstOrDefault(x => x.ToLower() == map) is not null)
-                return map;
+            // First check exact match on Name (case-insensitive)
+            var exactNameMatch = this.Maps!.FirstOrDefault(x => x.Name.Equals(map, StringComparison.OrdinalIgnoreCase));
+            if (exactNameMatch is not null)
+                return exactNameMatch.Name;
 
+            // Then check exact match on DisplayName (case-insensitive)
+            var exactDisplayMatch = this.Maps!.FirstOrDefault(x =>
+                x.DisplayName != null && x.DisplayName.Equals(map, StringComparison.OrdinalIgnoreCase));
+            if (exactDisplayMatch is not null)
+                return exactDisplayMatch.Name;
+
+            // Search maps where Name or DisplayName contains the input
             var matchingMaps = this.Maps!
-                .Select(x => x.Name)
-                .Where(x => x.ToLower().Contains(map.ToLower()))
+                .Where(x => x.Name.Contains(map, StringComparison.OrdinalIgnoreCase) ||
+                           (x.DisplayName != null && x.DisplayName.Contains(map, StringComparison.OrdinalIgnoreCase)))
                 .ToList();
 
             if (matchingMaps.Count == 0)
@@ -99,12 +109,13 @@ namespace cs2_rockthevote
             else if (matchingMaps.Count > 1)
             {
                 player!.PrintToChat(_localizer.LocalizeWithPrefix("nominate.multiple-maps-containing-name"));
-                player!.PrintToChat(string.Join(", ", matchingMaps));
-                //return matchingMaps;
+                // Show both display name and file name for clarity
+                var mapList = matchingMaps.Select(m => m.DisplayName != null ? $"{m.GetDisplayName()} ({m.Name})" : m.Name);
+                player!.PrintToChat(string.Join(", ", mapList));
                 return "";
             }
 
-            return matchingMaps[0];
+            return matchingMaps[0].Name;
         }
 
         public IEnumerable<Map> GetMaps()

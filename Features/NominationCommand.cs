@@ -230,14 +230,18 @@ namespace cs2_rockthevote
             var totalVotes = Nominations.Select(x => x.Value.Maps.Where(y => y == matchingMap).Count())
                 .Sum();
 
+            // Get display name for the nominated map
+            var mapObj = _mapLister.Maps?.FirstOrDefault(m => m.Name.Equals(matchingMap, StringComparison.OrdinalIgnoreCase));
+            var displayName = mapObj?.GetDisplayName() ?? matchingMap;
+
             if (!alreadyVoted)
             {
                 Server.PrintToChatAll(_localizer.LocalizeWithPrefix("nominate.nominated", player.PlayerName,
-                    matchingMap, totalVotes));
+                    displayName, totalVotes));
             }
             else
             {
-                player.PrintToChat(_localizer.LocalizeWithPrefix("nominate.already-nominated", matchingMap,
+                player.PrintToChat(_localizer.LocalizeWithPrefix("nominate.already-nominated", displayName,
                     totalVotes));
             }
             MenuManager.CloseActiveMenu(player);
