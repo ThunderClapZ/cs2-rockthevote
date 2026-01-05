@@ -96,6 +96,15 @@ namespace cs2_rockthevote
             _dependencyManager.OnPluginLoad(this);
             _mapLister.OnLoad(this); // ensure map is loaded
             RegisterListener<OnMapStart>(_dependencyManager.OnMapStart);
+
+            // If hot reload, manually trigger OnMapStart to reset state and initialize timers
+            if (hotReload)
+            {
+#if DEBUG
+                Logger.LogInformation("Hot reload detected, manually triggering OnMapStart to reset state");
+#endif
+                _dependencyManager.OnMapStart(Server.MapName);
+            }
 #if DEBUG
             Logger.LogInformation("Plugin loaded successfully");
 #endif

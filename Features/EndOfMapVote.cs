@@ -22,6 +22,7 @@ namespace cs2_rockthevote
         private bool deathMatch => _gameMode?.GetPrimitiveValue<int>() == 2 && _gameType?.GetPrimitiveValue<int>() == 1;
         private ConVar? _gameType;
         private ConVar? _gameMode;
+        private Plugin? _plugin;
 
         // overload for multilang support
         public EndOfMapVote(StringLocalizer localizer, TimeLimitManager timeLimit, MaxRoundsManager maxRounds, PluginState pluginState, GameRules gameRules, EndMapVoteManager voteManager)
@@ -79,6 +80,8 @@ namespace cs2_rockthevote
         public void OnMapStart(string map)
         {
             KillTimer();
+            // Start timer if needed (important for hot reload scenarios)
+            MaybeStartTimer();
         }
 
         void KillTimer()
@@ -87,28 +90,27 @@ namespace cs2_rockthevote
             _timer = null;
         }
 
-
+        void MaybeStartTimer()
+        {
+            KillTimer();
+            if (_plugin is not null && !_timeLimit.UnlimitedTime && _config.Enabled)
+            {
+                _timer = _plugin.AddTimer(1.0F, () =>
+                {
+                    if (_gameRules is not null && !_gameRules.WarmupRunning && !_pluginState.DisableCommands && _timeLimit.TimeRemaining > 0)
+                    {
+                        if (CheckTimeLeft() && !_pluginState.EofVoteHappening)
+                            StartVote();
+                    }
+                }, TimerFlags.REPEAT);
+            }
+        }
 
         public void OnLoad(Plugin plugin)
         {
+            _plugin = plugin;
             _gameMode = ConVar.Find("game_mode");
             _gameType = ConVar.Find("game_type");
-
-            void MaybeStartTimer()
-            {
-                KillTimer();
-                if (!_timeLimit.UnlimitedTime && _config.Enabled)
-                {
-                    _timer = plugin.AddTimer(1.0F, () =>
-                    {
-                        if (_gameRules is not null && !_gameRules.WarmupRunning && !_pluginState.DisableCommands && _timeLimit.TimeRemaining > 0)
-                        {
-                            if (CheckTimeLeft() && !_pluginState.EofVoteHappening)
-                                StartVote();
-                        }
-                    }, TimerFlags.REPEAT);
-                }
-            }
 
             plugin.RegisterEventHandler<EventRoundStart>((ev, info) =>
             {
