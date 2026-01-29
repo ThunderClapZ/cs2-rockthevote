@@ -207,7 +207,7 @@ namespace cs2_rockthevote
             if (matchingMap == "")
                 return;
 
-            if (matchingMap.Equals(Server.MapName, StringComparison.OrdinalIgnoreCase))
+            if (matchingMap.Equals(Plugin.StarCoreApi!.GetCurMapName(), StringComparison.OrdinalIgnoreCase))
             {
                 player!.PrintToChat(_localizer.LocalizeWithPrefix("general.validation.current-map"));
                 return;

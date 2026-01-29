@@ -5,6 +5,7 @@ using CounterStrikeSharp.API.Modules.Events;
 using cs2_rockthevote.Features;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using StarCore.Module.SharedApiModule;
 using static CounterStrikeSharp.API.Core.Listeners;
 
 namespace cs2_rockthevote
@@ -82,6 +83,7 @@ namespace cs2_rockthevote
         }
 
         public Config Config { get; set; } = null!;
+        public static IStarCoreApi? StarCoreApi { get; private set; }
 
         public string Localize(string prefix, string key, params object[] values)
         {
@@ -188,6 +190,11 @@ namespace cs2_rockthevote
                 throw new Exception("Your config file is too old, please delete it from addons/counterstrikesharp/configs/plugins/RockTheVote and let the plugin recreate it on load");
 
             _dependencyManager.OnConfigParsed(config);
+        }
+
+        public override void OnAllPluginsLoaded(bool hotReload)
+        {
+            StarCoreApi = IStarCoreApi.PluginCapability.Get();
         }
     }
 }

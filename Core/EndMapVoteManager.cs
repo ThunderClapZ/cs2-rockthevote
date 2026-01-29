@@ -393,7 +393,7 @@ namespace cs2_rockthevote
 
 
                 var mapsScrambled = Shuffle(new Random(),
-                    _mapLister.Maps!.Select(x => x.Name).Where(x => x != Server.MapName && !_mapCooldown.IsMapInCooldown(x))
+                    _mapLister.Maps!.Select(x => x.Name).Where(x => x != Plugin.StarCoreApi!.GetCurMapName() && !_mapCooldown.IsMapInCooldown(x))
                         .ToList());
                 mapsEllected = _nominationManager.NominationWinners().Concat(mapsScrambled).Distinct().ToList();
 

@@ -143,7 +143,7 @@ namespace cs2_rockthevote
 
         void AddVote(CCSPlayerController player, string map)
         {
-            if (map == Server.MapName)
+            if (map == Plugin.StarCoreApi!.GetCurMapName())
             {
                 player!.PrintToChat(_localizer.LocalizeWithPrefix("general.validation.current-map"));
                 return;
