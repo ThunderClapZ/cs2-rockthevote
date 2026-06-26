@@ -36,6 +36,7 @@ namespace cs2_rockthevote
 
         private Map[] _maps = new Map[0];
         private Config? _config;
+        private static bool _isFirstStart = true;
 
         public ChangeMapManager(StringLocalizer localizer, PluginState pluginState, MapLister mapLister)
         {
@@ -66,6 +67,19 @@ namespace cs2_rockthevote
 #if DEBUG
             _plugin?.Logger.LogInformation($"ChangeMapManager: Map started, resetting next map state");
 #endif
+            if (_isFirstStart && _config?.ChangeMapOnServerStart == true && _maps.Length > 0)
+            {
+                _isFirstStart = false;
+                var availableMaps = _maps.Where(x => x.Name != _map).ToArray();
+                if (availableMaps.Length > 0)
+                {
+                    var randomMap = availableMaps[new Random().Next(availableMaps.Length)];
+                    _plugin?.AddTimer(5.0F, () =>
+                    {
+                        Server.ExecuteCommand($"host_workshop_map {randomMap.Id}");
+                    });
+                }
+            }
         }
 
         public bool ChangeNextMap(bool mapEnd = false)

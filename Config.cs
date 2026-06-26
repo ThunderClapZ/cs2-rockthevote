@@ -142,5 +142,6 @@ namespace cs2_rockthevote
         public TimeleftConfig Timeleft { get; set; } = new();
         public NextmapConfig Nextmap { get; set; } = new();
         public ushort MapsInCoolDown { get; set; } = 3;
+        public bool ChangeMapOnServerStart { get; set; } = true;
     }
 }
