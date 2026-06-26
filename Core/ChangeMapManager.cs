@@ -77,6 +77,7 @@ namespace cs2_rockthevote
                     _plugin?.AddTimer(5.0F, () =>
                     {
                         Server.ExecuteCommand($"host_workshop_map {randomMap.Id}");
+                        _plugin?.Logger.LogInformation($"ChangeMapManager: Server crash or first start,changing map to {randomMap.Id}");
                     });
                 }
             }
